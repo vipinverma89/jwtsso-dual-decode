@@ -1,0 +1,86 @@
+{
+  "_args": [
+    [
+      "jwtsso",
+      "/home/vipin/Sites/product/server"
+    ]
+  ],
+  "_from": "jwtsso@latest",
+  "_id": "jwtsso@1.0.1",
+  "_inCache": true,
+  "_installable": true,
+  "_location": "/jwtsso",
+  "_npmUser": {
+    "email": "esa-matti@suuronen.org",
+    "name": "epeli"
+  },
+  "_npmVersion": "1.2.32",
+  "_phantomChildren": {},
+  "_requested": {
+    "name": "jwtsso",
+    "raw": "jwtsso",
+    "rawSpec": "",
+    "scope": null,
+    "spec": "latest",
+    "type": "tag"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/jwtsso/-/jwtsso-1.0.1.tgz",
+  "_shasum": "3c1d813e7071408ee2c2ca55f790724b127423d0",
+  "_shrinkwrap": null,
+  "_spec": "jwtsso",
+  "_where": "/home/vipin/Sites/product/server",
+  "author": {
+    "email": "esa-matti.suuronen@opinsys.fi",
+    "name": "Esa-Matti Suuronen"
+  },
+  "bugs": {
+    "url": "https://github.com/opinsys/connect-puavo/issues"
+  },
+  "dependencies": {
+    "jwt-simple": "~0.1.0",
+    "xtend": "~2.0.6"
+  },
+  "description": "JSON Web Token Single Sign-On consumer middleware for Express",
+  "devDependencies": {
+    "express": "~3.3.4",
+    "mocha": "~1.12.0",
+    "supertest": "~0.7.1"
+  },
+  "directories": {},
+  "dist": {
+    "shasum": "3c1d813e7071408ee2c2ca55f790724b127423d0",
+    "tarball": "https://registry.npmjs.org/jwtsso/-/jwtsso-1.0.1.tgz"
+  },
+  "homepage": "https://github.com/opinsys/connect-puavo#readme",
+  "keywords": [
+    "express",
+    "jwt",
+    "puavo",
+    "opinsys",
+    "authentication",
+    "sso"
+  ],
+  "license": "MIT",
+  "main": "index.js",
+  "maintainers": [
+    {
+      "email": "esa-matti@suuronen.org",
+      "name": "epeli"
+    }
+  ],
+  "name": "jwtsso",
+  "optionalDependencies": {},
+  "readme": "[![Build Status](https://travis-ci.org/opinsys/node-jwtsso.png?branch=master)](https://travis-ci.org/opinsys/node-jwtsso)\n\n# jwtsso\n\n[JSON Web Token][jwt] Single Sign-On consumer middleware for [Express][].\n\n## Usage\n\nSetup Express app with jwtsso and session middleware\n\n```javascript\nvar express = require(\"express\");\nvar jwtsso = require(\"jwtsso\");\n\nvar app = express();\n\napp.use(express.cookieParser());\napp.use(express.cookieSession({ secret: \"secret\" }));\napp.use(jwtsso({\n\n    // Service endpoint that issues the jwt tokens\n    authEndpoint: \"https://api.authprovider.example/sso\",\n\n    // Shared secret string with the above service\n    sharedSecret: \"secret\",\n\n    // Public mountpoint for this app\n    mountPoint: \"http://application.example\",\n\n    // Set max age in seconds for the tokens\n    // Defaults to 60 seconds\n    maxAge: 120\n\n}));\n```\n\nNow from any route or latter middleware you can call `res.requestJwt()` to get\na JWT token from the `authEndpoint`. The token will be saved to\n`req.session.jwt`.\n\nFor example to ensure that JWT token is always present you can add following\nadditional middleware\n\n```javascript\napp.use(function(req, res, next){\n    if (!req.session.jwt) return res.requestJwt();\n    next();\n});\n```\n\nBy default `res.requestJwt([custom path])` will redirect back to same url where\nit was called from or you can pass in a custom path.\n\n## Authentication endpoint\n\nUnder the hood call to `res.requestJwt()` on `/current/path` redirects user to\n\n    https://api.authprovider.example/sso?return_to=http%3A%2F%2Fapplication.example%2Fcurrent/path\n\nFrom there authentication endpoint is expected to redirect user back to url\nspecified in the `return_to` query value with the JWT token\n\n    http://application.example/current/path?jwt=<token>\n\njwtsso then detects JWT token in the query string, validates it, sets it to\n`req.session.jwt` and clears it from the url bar with an additional redirect.\n\nThis module was designed for the Single Sign-On feature of puavo-rest\n\n<https://github.com/opinsys/puavo-users/blob/master/rest/doc/SSO.md>\n\n\n[Express]: http://expressjs.com/\n[jwt]: http://tools.ietf.org/html/draft-jones-json-web-token\n\n",
+  "readmeFilename": "README.md",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/opinsys/connect-puavo.git"
+  },
+  "scripts": {
+    "test": "mocha -C test/*test.js"
+  },
+  "version": "1.0.1"
+}
