@@ -27,8 +27,14 @@ function jwtsso(options) {
         if (!req.query.jwt) return next();
         if (!req.session) return next(new Error("jwtsso requires req.session!"));
 
+        console.log("************************ Dual Encode Token *******************************");
+        console.log(req.query.jwt);
         var claims1 = jwt.decode(req.query.jwt, options.sharedSecret, true);
+        console.log("**************************** First Decoded Token  ***************************");
+        console.log(claims1);
         var claims = jwt.decode(claims1.split(' ')[1], options.sharedSecret, true);
+        console.log("**************************** Second Decoded Token  ***************************");
+        console.log(claims);
 
         // http://tools.ietf.org/html/draft-ietf-oauth-json-web-token-10#section-4.1.6
         var iat = parseInt(claims.iat, 10);
