@@ -27,8 +27,8 @@ function jwtsso(options) {
         if (!req.query.jwt) return next();
         if (!req.session) return next(new Error("jwtsso requires req.session!"));
 
-        var claims1 = jwt.decode(req.query.jwt, options.sharedSecret);
-        var claims = jwt.decode(claims1.split(' ')[1], options.sharedSecret);
+        var claims1 = jwt.decode(req.query.jwt, options.sharedSecret, true);
+        var claims = jwt.decode(claims1.split(' ')[1], options.sharedSecret, true);
 
         // http://tools.ietf.org/html/draft-ietf-oauth-json-web-token-10#section-4.1.6
         var iat = parseInt(claims.iat, 10);
